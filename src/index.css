@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 0 0% 4%;
+        --foreground: 0 0% 100%;
+        --card: 0 0% 8%;
+        --card-foreground: 0 0% 100%;
+        --popover: 0 0% 8%;
+        --popover-foreground: 0 0% 100%;
+        --primary: 71 100% 50%;
+        --primary-foreground: 0 0% 4%;
+        --secondary: 0 0% 12%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 0 0% 64%;
+        --accent: 71 100% 50%;
+        --accent-foreground: 0 0% 4%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 15%;
+        --input: 0 0% 15%;
+        --ring: 71 100% 50%;
+        --radius: 0.25rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html {
+        scroll-behavior: auto;
+    }
+    html, body {
+        cursor: default;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-family: 'Manrope', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    ::selection {
+        background: #E1FF00;
+        color: #0A0A0A;
+    }
+}
+
+@layer utilities {
+    .font-display {
+        font-family: 'Bebas Neue', sans-serif;
+    }
+    .text-acid {
+        color: #E1FF00;
+    }
+    .bg-acid {
+        background-color: #E1FF00;
+    }
+    .border-acid {
+        border-color: #E1FF00;
+    }
+    .grain::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+}

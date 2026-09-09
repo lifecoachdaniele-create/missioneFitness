@@ -7,7 +7,7 @@ import { Reveal, Lines } from "@/components/site/Reveal";
 import { startCheckout, isFramed, isTestMode, discounted } from "@/components/site/checkout";
 import PromoField, { usePromo } from "@/components/site/PromoField";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api;
+const API = "https://missionefitnessbackend.onrender.com/api";
 const fmt = (p) => `€ ${p.toFixed(2).replace(".", ",")}`;
 
 const KIND_LABELS = {

@@ -117,7 +117,7 @@ export default function Catalogo() {
   }, []);
 
   const filtered = useMemo(
-    () => products.filter((p) => p.gender === gender && (kind === "tutti" || p.kind === kind)),
+    () => products.filter((p) => (!p.gender || p.gender.toLowerCase() === gender.toLowerCase()) && (kind === "tutti" || p.kind === kind)),,
     [products, gender, kind]
   );
 

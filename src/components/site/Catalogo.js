@@ -113,7 +113,12 @@ export default function Catalogo() {
   const promo = usePromo();
 
   useEffect(() => {
-    axios.get(`${API}/packages`).then((r) => setProducts(r.data)).catch(() => toast.error("Errore nel caricamento dei pacchetti"));
+    axios.get(`${API}/packages`)
+      .then((r) => {
+        const data = Array.isArray(r.data) && Array.isArray(r.data[0]) ? r.data[0] : r.data;
+        setProducts(Array.isArray(data) ? data : []);
+      })
+      .catch(() => toast.error("Errore nel caricamento"));;
   }, []);
 
   const filtered = useMemo(

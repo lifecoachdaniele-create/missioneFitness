@@ -37,17 +37,19 @@ export const discounted = (price, promo) => {
   return price;
 };
 
-export async function startCheckout(lookupKey) {
-  const { data } = await axios.post(`${API}/payments/checkout`, {
-    lookup_key: lookupKey,
-    origin_url: window.location.origin,
-    test_code: sessionStorage.getItem(TEST_KEY) || undefined,
-    promo_code: getPromo()?.code || undefined,
+export async function startCheckout(packageId) {
+  const origin = window.location.origin;
+  const { data } = await axios.post(`${API}/create-checkout-session`, {
+    package_id: packageId,
+    success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origin}/payment/cancel`,
   });
+  const url = data.checkout_url || data.url || data.session_url;
+  if (!url) throw new Error("Checkout URL mancante nella risposta del backend");
   if (isFramed()) {
-    window.dispatchEvent(new CustomEvent(CHECKOUT_READY_EVENT, { detail: { url: data.checkout_url, mode: data.mode } }));
+    window.dispatchEvent(new CustomEvent(CHECKOUT_READY_EVENT, { detail: { url, mode: data.mode } }));
     return data;
   }
-  window.location.assign(data.checkout_url);
+  window.location.assign(url);
   return data;
 }

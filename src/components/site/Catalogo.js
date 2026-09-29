@@ -7,8 +7,19 @@ import { Reveal, Lines } from "@/components/site/Reveal";
 import { startCheckout, isFramed, isTestMode, discounted } from "@/components/site/checkout";
 import PromoField, { usePromo } from "@/components/site/PromoField";
 
-const API = "https://missionefitnessbackend.onrender.com/api";
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const fmt = (p) => `€ ${p.toFixed(2).replace(".", ",")}`;
+
+// Il backend su Render restituisce { package_id, title, description, ... }:
+// qui lo riportiamo al formato che le card si aspettano.
+const normalize = (p) => ({
+  ...p,
+  id: p.id ?? p.package_id ?? p._id,
+  name: p.name ?? p.title ?? "",
+  features: Array.isArray(p.features) ? p.features : p.description ? [p.description] : [],
+  available: p.available ?? true,
+  price: Number(p.price) || 0,
+});
 
 const KIND_LABELS = {
   solo: "SOLO FITNESS",
@@ -55,7 +66,7 @@ function ProductCard({ p, promo }) {
       <span className="absolute inset-x-0 top-0 h-px bg-acid scale-x-0 group-hover/card:scale-x-100 origin-left transition-transform duration-500" />
       <div className="flex items-center justify-between mb-6">
         <span className="font-display text-lg text-acid border border-acid px-3 py-1">
-          {isBundle ? "FASI 01+02+03" : `FASE 0${p.fase}`}
+          {isBundle ? "FASI 01+02+03" : p.fase ? `FASE 0${p.fase}` : "PROGRAMMA"}
         </span>
         <span className="text-xs text-neutral-500 font-bold tracking-widest text-right">
           {KIND_LABELS[p.kind]}
@@ -116,13 +127,13 @@ export default function Catalogo() {
     axios.get(`${API}/packages`)
       .then((r) => {
         const data = Array.isArray(r.data) && Array.isArray(r.data[0]) ? r.data[0] : r.data;
-        setProducts(Array.isArray(data) ? data : []);
+        setProducts(Array.isArray(data) ? data.map(normalize) : []);
       })
-      .catch(() => toast.error("Errore nel caricamento"));;
+      .catch(() => toast.error("Errore nel caricamento dei pacchetti"));
   }, []);
 
   const filtered = useMemo(
-    () => products.filter((p) => (!p.gender || p.gender.toLowerCase() === gender.toLowerCase()) && (kind === "tutti" || p.kind === kind)),,
+    () => products.filter((p) => (!p.gender || p.gender.toLowerCase() === gender.toLowerCase()) && (kind === "tutti" || p.kind === kind)),
     [products, gender, kind]
   );
 
